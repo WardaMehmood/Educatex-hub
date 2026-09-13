@@ -13,11 +13,23 @@ import {
   XCircle,
   Eye,
   ArrowRight,
-  BarChart2
+  BarChart2,
+  ArrowLeft
 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Badge } from '../common/Badge';
 import { CompetitionQuestionVisual } from './CompetitionQuestionVisual';
+
+// Interactive Educational Game Formats
+import { WordSearchGame } from './games/WordSearchGame';
+import { CrosswordGame } from './games/CrosswordGame';
+import { MatchingPairsGame } from './games/MatchingPairsGame';
+import { FillInBlanksGame } from './games/FillInBlanksGame';
+import { AlphabetChallengeGame } from './games/AlphabetChallengeGame';
+import { MemoryMatchGame } from './games/MemoryMatchGame';
+import { TrueFalseGame } from './games/TrueFalseGame';
+import { MapQuizGame } from './games/MapQuizGame';
+import { RapidFireGame } from './games/RapidFireGame';
 
 // Kahoot geometric shape badges and vibrant 4-color palette
 const KAHOOT_SHAPES = [
@@ -169,6 +181,120 @@ export const CompetitionLiveSession: React.FC = () => {
       );
     }
   };
+
+  const handleGameComplete = (earnedScore: number, accuracy: number) => {
+    const updatedParticipants = (currentComp.participants || []).map(p =>
+      p.name.includes('(You)') || p.name.includes('Sarah') ? { ...p, score: p.score + earnedScore } : p
+    ).sort((a, b) => b.score - a.score);
+
+    updateCompetition({
+      ...currentComp,
+      status: 'completed',
+      participants: updatedParticipants
+    });
+
+    setCompetitionView('results');
+    showToast(`Round Completed! Earned ${earnedScore} pts (${accuracy}% accuracy)`);
+  };
+
+  // If this competition is one of the 9 educational game types (non-standard Kahoot MCQ)
+  if (currentComp.gameType && currentComp.gameType !== 'quiz') {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', maxWidth: '1100px', margin: '0 auto' }}>
+        {/* Top Session Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <button
+            onClick={() => setCompetitionView('dashboard')}
+            style={{
+              background: 'transparent',
+              border: 'none',
+              color: '#94A3B8',
+              fontSize: '13px',
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
+            <ArrowLeft size={15} /> Exit to Arena Dashboard
+          </button>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span className="competition-badge">LIVE MULTIPLAYER TOURNAMENT</span>
+            <span style={{ fontSize: '12px', fontWeight: 800, color: 'var(--color-lime-accent)' }}>
+              PIN: {currentComp.code}
+            </span>
+          </div>
+        </div>
+
+        {/* Selected Interactive Game Component */}
+        {currentComp.gameType === 'word_search' && (
+          <WordSearchGame
+            data={currentComp.gameData}
+            onComplete={handleGameComplete}
+            onExit={() => setCompetitionView('dashboard')}
+          />
+        )}
+        {currentComp.gameType === 'crossword' && (
+          <CrosswordGame
+            data={currentComp.gameData}
+            onComplete={handleGameComplete}
+            onExit={() => setCompetitionView('dashboard')}
+          />
+        )}
+        {currentComp.gameType === 'matching_pairs' && (
+          <MatchingPairsGame
+            data={currentComp.gameData}
+            onComplete={handleGameComplete}
+            onExit={() => setCompetitionView('dashboard')}
+          />
+        )}
+        {currentComp.gameType === 'fill_in_blanks' && (
+          <FillInBlanksGame
+            data={currentComp.gameData}
+            onComplete={handleGameComplete}
+            onExit={() => setCompetitionView('dashboard')}
+          />
+        )}
+        {currentComp.gameType === 'alphabet' && (
+          <AlphabetChallengeGame
+            data={currentComp.gameData}
+            onComplete={handleGameComplete}
+            onExit={() => setCompetitionView('dashboard')}
+          />
+        )}
+        {currentComp.gameType === 'memory' && (
+          <MemoryMatchGame
+            data={currentComp.gameData}
+            onComplete={handleGameComplete}
+            onExit={() => setCompetitionView('dashboard')}
+          />
+        )}
+        {currentComp.gameType === 'true_false' && (
+          <TrueFalseGame
+            data={currentComp.gameData}
+            onComplete={handleGameComplete}
+            onExit={() => setCompetitionView('dashboard')}
+          />
+        )}
+        {currentComp.gameType === 'map_quiz' && (
+          <MapQuizGame
+            data={currentComp.gameData}
+            onComplete={handleGameComplete}
+            onExit={() => setCompetitionView('dashboard')}
+          />
+        )}
+        {currentComp.gameType === 'rapid_fire' && (
+          <RapidFireGame
+            data={currentComp.gameData}
+            onComplete={handleGameComplete}
+            onExit={() => setCompetitionView('dashboard')}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '1240px', margin: '0 auto' }}>

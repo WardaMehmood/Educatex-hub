@@ -189,18 +189,34 @@ export interface LearningPlan {
   savedInLibrary: boolean;
 }
 
+export type CompetitionGameType =
+  | 'quiz'
+  | 'word_search'
+  | 'crossword'
+  | 'matching_pairs'
+  | 'fill_in_blanks'
+  | 'alphabet'
+  | 'memory'
+  | 'true_false'
+  | 'map_quiz'
+  | 'rapid_fire';
+
 export interface CompetitionSession {
   id: string;
   title: string;
   code: string;
   status: 'lobby' | 'live' | 'completed';
   format: 'simple' | 'game_style';
+  gameType?: CompetitionGameType;
+  difficulty?: 'Easy' | 'Medium' | 'Hard' | 'Dynamic';
+  topic?: string;
+  gameData?: any;
   teamFormation: 'auto' | 'self_select' | 'host_assigned';
   participantsCount: number;
   currentQuestionIndex: number;
   totalQuestions: number;
   timePerQuestion: number;
-  subject?: 'biology' | 'chemistry' | 'physics' | 'maths' | 'cs';
+  subject?: 'biology' | 'chemistry' | 'physics' | 'maths' | 'cs' | string;
   coverImage?: string;
   questions: ObjectiveQuestion[];
   participants: {
@@ -214,3 +230,4 @@ export interface CompetitionSession {
   isPaused: boolean;
   timeRemaining: number;
 }
+

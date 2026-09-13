@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import {
   Trophy,
@@ -8,18 +8,30 @@ import {
   ArrowRight,
   Flame,
   CheckCircle2,
-  Gamepad2
+  Gamepad2,
+  Layers
 } from 'lucide-react';
 import { Button } from '../common/Button';
+import { COMPETITION_GAMES, CompetitionGameMeta } from '../../data/competitionGamesData';
+import { CompetitionGameCard } from './CompetitionGameCard';
+import { CompetitionSession } from '../../types';
 
 export const CompetitionDashboard: React.FC = () => {
   const {
     competitions,
+    addCompetition,
     setActiveCompetitionId,
-    setCompetitionView
+    setCompetitionView,
+    showToast
   } = useApp();
 
-  // Show only 3 to 4 active/recent competitions
+  const [selectedCategory, setSelectedCategory] = useState<'all' | 'quizzes' | 'words' | 'logic' | 'visual'>('all');
+
+  const filteredGames = selectedCategory === 'all'
+    ? COMPETITION_GAMES
+    : COMPETITION_GAMES.filter(g => g.category === selectedCategory);
+
+  // Show only active/recent competitions
   const visibleCompetitions = competitions.slice(0, 4);
   const featuredComp = visibleCompetitions[0] || competitions[0];
 
@@ -38,8 +50,45 @@ export const CompetitionDashboard: React.FC = () => {
     setCompetitionView('results');
   };
 
+  const handleLaunchGame = (game: CompetitionGameMeta) => {
+    const compId = `comp-${game.id}-${Date.now()}`;
+    const newComp: CompetitionSession = {
+      id: compId,
+      title: `${game.name} Showdown Arena`,
+      code: Math.floor(1000 + Math.random() * 9000).toString(),
+      status: 'live',
+      format: 'game_style',
+      gameType: game.id,
+      difficulty: game.difficulty,
+      topic: 'Core Curriculum & Competitive Terms',
+      gameData: game.sampleData,
+      teamFormation: 'auto',
+      participantsCount: 48,
+      currentQuestionIndex: 0,
+      totalQuestions: 6,
+      timePerQuestion: 25,
+      timeRemaining: 25,
+      isPaused: false,
+      questions: game.sampleData?.questions || [],
+      participants: [
+        { id: 'p-1', name: 'Sarah Jenkins (You)', avatar: 'SJ', score: 0, streak: 0, team: 'Teal Raptors' },
+        { id: 'p-2', name: 'Ahmed Tariq', avatar: 'AT', score: 540, streak: 2, team: 'Emerald Wolves' },
+        { id: 'p-3', name: 'Ali Raza', avatar: 'AR', score: 480, streak: 1, team: 'Lime Vipers' },
+        { id: 'p-4', name: 'Hamza Malik', avatar: 'HM', score: 420, streak: 1, team: 'Teal Raptors' }
+      ]
+    };
+    addCompetition(newComp);
+    setActiveCompetitionId(compId);
+    setCompetitionView('live');
+    showToast(`Launching ${game.name} Arena!`);
+  };
+
+  const handleCreateGame = (game: CompetitionGameMeta) => {
+    setCompetitionView('create');
+  };
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '26px' }}>
       {/* Top Hero Banner */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div>
@@ -51,7 +100,7 @@ export const CompetitionDashboard: React.FC = () => {
             Live Academic Competitions & Showdowns
           </h1>
           <p style={{ fontSize: '12.5px', color: '#94A3B8', marginTop: '2px' }}>
-            Multiplayer Kahoot-style tournament arena for live showdowns, speed quizzes, and team battles.
+            Multiplayer tournament arena for live showdowns, speed quizzes, interactive puzzles, and word challenges.
           </p>
         </div>
 
@@ -66,6 +115,82 @@ export const CompetitionDashboard: React.FC = () => {
           </Button>
         </div>
       </div>
+
+      {/* 10 Interactive Educational Game Formats Section */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
+          <div>
+            <h2 style={{ fontSize: '16px', fontWeight: 800, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+              <Gamepad2 size={18} color="var(--color-lime-accent)" />
+              Educational Competition Game Formats
+            </h2>
+            <span style={{ fontSize: '11.5px', color: '#94A3B8' }}>
+              Select an educational game type to launch a live multiplayer battle or create a competition
+            </span>
+          </div>
+
+          {/* Category Filter Pills */}
+          <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+            {[
+              { id: 'all', label: 'All Formats (10)' },
+              { id: 'quizzes', label: 'Quizzes & Blitz (3)' },
+              { id: 'words', label: 'Word Puzzles (3)' },
+              { id: 'logic', label: 'Memory & Pairs (2)' },
+              { id: 'visual', label: 'Interactive Maps (1)' }
+            ].map(cat => (
+              <button
+                key={cat.id}
+                type="button"
+                onClick={() => setSelectedCategory(cat.id as any)}
+                style={{
+                  padding: '5px 12px',
+                  borderRadius: '20px',
+                  border: selectedCategory === cat.id ? '1px solid var(--color-lime-accent)' : '1px solid rgba(255,255,255,0.15)',
+                  backgroundColor: selectedCategory === cat.id ? 'rgba(163, 230, 53, 0.15)' : 'rgba(255,255,255,0.04)',
+                  color: selectedCategory === cat.id ? 'var(--color-lime-accent)' : '#CBD5E1',
+                  fontSize: '11.5px',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  transition: 'all 0.15s ease'
+                }}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* 10 Interactive Game Cards Grid */}
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+            gap: '16px'
+          }}
+        >
+          {filteredGames.map(game => (
+            <CompetitionGameCard
+              key={game.id}
+              game={game}
+              mode="gallery"
+              onCreate={() => handleCreateGame(game)}
+              onPlay={() => handleLaunchGame(game)}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Active Tournament Showdowns Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px' }}>
+        <h2 style={{ fontSize: '16px', fontWeight: 800, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+          <Trophy size={18} color="var(--color-lime-accent)" />
+          Active Live Tournaments & Showdown Rooms
+        </h2>
+        <span style={{ fontSize: '11.5px', color: '#94A3B8' }}>
+          Real-time lobbies and running tournaments
+        </span>
+      </div>
+
 
       {/* Competitions Grid or Empty State */}
       {visibleCompetitions.length === 0 ? (

@@ -333,8 +333,9 @@ export const CompetitionResults: React.FC = () => {
           <thead>
             <tr>
               <th>Rank</th>
-              <th>Contender</th>
+              <th>Student</th>
               <th>Score</th>
+              <th>Time</th>
               <th>Accuracy</th>
               <th>Standing</th>
             </tr>
@@ -347,6 +348,9 @@ export const CompetitionResults: React.FC = () => {
                 </td>
                 <td style={{ fontWeight: 600 }}>{r.name}</td>
                 <td style={{ fontWeight: 700, color: 'var(--color-primary-emerald)' }}>{r.score} pts</td>
+                <td style={{ fontSize: '13px', color: 'var(--color-text-muted)', fontWeight: 600 }}>
+                  {1 + Math.floor(r.rank * 0.4)}m {(r.rank * 7 + 12) % 60}s
+                </td>
                 <td>{96 - r.rank * 3}%</td>
                 <td>
                   <Badge variant={r.rank === 1 ? 'lime' : r.rank <= 3 ? 'emerald' : 'neutral'}>
