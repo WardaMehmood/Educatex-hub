@@ -16,7 +16,8 @@ import {
   HelpCircle,
   Play,
   GraduationCap,
-  ChevronDown
+  ChevronDown,
+  ChevronRight
 } from 'lucide-react';
 import { Button } from '../common/Button';
 import { Modal } from '../common/Modal';
@@ -54,13 +55,13 @@ export const LandingPage: React.FC = () => {
           ========================================================================= */}
       <header
         style={{
-          height: '80px',
+          height: '84px',
           backgroundColor: '#FFFFFF',
-          borderBottom: '1px solid #E7E5E4',
+          borderBottom: '1px solid #F1F5F9',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0 48px',
+          padding: '0 56px',
           position: 'sticky',
           top: 0,
           zIndex: 50
@@ -70,31 +71,21 @@ export const LandingPage: React.FC = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', cursor: 'pointer' }} onClick={() => scrollToSection('hero')}>
           <div
             style={{
-              width: '42px',
-              height: '42px',
+              width: '38px',
+              height: '38px',
               borderRadius: '10px',
-              backgroundColor: '#0F766E',
+              backgroundColor: '#064E3B',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#FFFFFF',
-              fontWeight: 800,
-              fontSize: '18px',
-              boxShadow: '0 4px 12px rgba(15, 118, 110, 0.25)'
+              color: '#FFFFFF'
             }}
           >
-            <GraduationCap size={24} />
+            <GraduationCap size={22} />
           </div>
-          <div style={{ lineHeight: '1.2' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '20px', fontWeight: 800, color: '#134E4A', letterSpacing: '-0.02em' }}>
-                Educatex Hub
-              </span>
-            </div>
-            <span style={{ fontSize: '11px', color: '#78716C', fontWeight: 600, letterSpacing: '0.02em' }}>
-              Learn Smarter. Teach Better.
-            </span>
-          </div>
+          <span style={{ fontSize: '18px', fontWeight: 850, color: '#064E3B', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+            EDUCATEX HUB
+          </span>
         </div>
 
         {/* Center Nav Links */}
@@ -132,7 +123,7 @@ export const LandingPage: React.FC = () => {
           </button>
           <button
             onClick={() => setRole('competition')}
-            style={{ background: 'none', border: 'none', fontSize: '14.5px', fontWeight: 600, color: '#0F766E', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
+            style={{ background: 'none', border: 'none', fontSize: '14px', fontWeight: 600, color: '#0F766E', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px' }}
           >
             Competition ⚡
           </button>
@@ -143,8 +134,8 @@ export const LandingPage: React.FC = () => {
           <button
             onClick={() => setShowGuestModal(true)}
             style={{
-              padding: '9px 16px',
-              fontSize: '13.5px',
+              padding: '8px 14px',
+              fontSize: '13px',
               fontWeight: 600,
               backgroundColor: '#ECFDF5',
               border: '1px solid #A7F3D0',
@@ -156,21 +147,24 @@ export const LandingPage: React.FC = () => {
               gap: '6px'
             }}
           >
-            <QrCode size={15} /> Join with PIN/QR
+            <QrCode size={14} /> Join with PIN
           </button>
 
           <button
             onClick={() => setRole('student')}
             style={{
-              padding: '9px 20px',
+              padding: '9px 24px',
               fontSize: '14px',
               fontWeight: 600,
               backgroundColor: 'transparent',
-              border: '1px solid #D6D3D1',
+              border: '1px solid #D1D5DB',
               borderRadius: '9999px',
-              color: '#1C1917',
-              cursor: 'pointer'
+              color: '#111827',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease'
             }}
+            onMouseEnter={e => e.currentTarget.style.borderColor = '#9CA3AF'}
+            onMouseLeave={e => e.currentTarget.style.borderColor = '#D1D5DB'}
           >
             Login
           </button>
@@ -178,16 +172,19 @@ export const LandingPage: React.FC = () => {
           <button
             onClick={() => setRole('teacher')}
             style={{
-              padding: '10px 24px',
+              padding: '10px 26px',
               fontSize: '14px',
               fontWeight: 700,
-              backgroundColor: '#0F766E',
+              backgroundColor: '#0B3B2E',
               border: 'none',
               borderRadius: '9999px',
               color: '#FFFFFF',
               cursor: 'pointer',
-              boxShadow: '0 4px 12px rgba(15, 118, 110, 0.25)'
+              boxShadow: '0 4px 14px rgba(11, 59, 46, 0.25)',
+              transition: 'all 0.15s ease'
             }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 6px 18px rgba(11, 59, 46, 0.35)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 14px rgba(11, 59, 46, 0.25)'; }}
           >
             Get Started
           </button>
@@ -195,316 +192,352 @@ export const LandingPage: React.FC = () => {
       </header>
 
       {/* =========================================================================
-          2. HERO SECTION (EXACT MATCH TO ATTACHED IMAGE)
+          2. HERO SECTION (EXACT MATCH TO REFERENCE IMAGE - COMPACT VIEWPORT)
           ========================================================================= */}
       <section
         id="hero"
         style={{
           position: 'relative',
-          padding: '48px 48px 64px',
-          maxWidth: '1360px',
+          padding: '24px 20px 28px',
+          maxWidth: '1350px',
           margin: '0 auto',
           width: '100%',
-          overflow: 'visible'
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          overflow: 'hidden'
         }}
       >
-        <div style={{ display: 'grid', gridTemplateColumns: '1.05fr 1fr', gap: '48px', alignItems: 'center' }}>
-          {/* Left Hero Column */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-            {/* Pill Badge */}
-            <div
+        {/* Soft Ambient Organic Gradients Behind Hero */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '10px',
+            left: '-60px',
+            width: '360px',
+            height: '360px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(167, 243, 208, 0.45) 0%, rgba(209, 250, 229, 0) 70%)',
+            filter: 'blur(45px)',
+            zIndex: 0,
+            pointerEvents: 'none'
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            top: '20px',
+            right: '-60px',
+            width: '360px',
+            height: '360px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(167, 243, 208, 0.45) 0%, rgba(209, 250, 229, 0) 70%)',
+            filter: 'blur(45px)',
+            zIndex: 0,
+            pointerEvents: 'none'
+          }}
+        />
+
+        {/* Decorative Green Paper Airplane (Left) */}
+        <div
+          style={{
+            position: 'absolute',
+            left: '40px',
+            top: '180px',
+            zIndex: 3,
+            pointerEvents: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            transform: 'scale(0.85)'
+          }}
+        >
+          <svg width="140" height="110" viewBox="0 0 140 110" fill="none">
+            <path
+              d="M10 95 C 40 85, 60 45, 105 32"
+              stroke="#059669"
+              strokeWidth="2.2"
+              strokeDasharray="5 5"
+              fill="none"
+              opacity="0.65"
+            />
+            <g transform="translate(100, 16) rotate(-15)">
+              <path d="M0 16 L32 0 L20 32 L15 20 Z" fill="#10B981" />
+              <path d="M15 20 L32 0 L20 32 Z" fill="#059669" opacity="0.35" />
+            </g>
+          </svg>
+        </div>
+
+        {/* Decorative Corner Foliage Accents (Bottom Left & Right) */}
+        <div style={{ position: 'absolute', bottom: '-20px', left: '-25px', width: '150px', height: '150px', opacity: 0.8, zIndex: 2, pointerEvents: 'none' }}>
+          <svg viewBox="0 0 200 200" fill="none">
+            <path d="M10 190 Q 60 120, 150 110 Q 110 160, 10 190 Z" fill="#047857" opacity="0.8" />
+            <path d="M10 190 Q 90 90, 180 80 Q 130 140, 10 190 Z" fill="#10B981" opacity="0.65" />
+            <path d="M10 190 Q 40 70, 120 50 Q 80 120, 10 190 Z" fill="#065F46" opacity="0.85" />
+          </svg>
+        </div>
+        <div style={{ position: 'absolute', bottom: '-20px', right: '-25px', width: '150px', height: '150px', opacity: 0.8, zIndex: 2, pointerEvents: 'none', transform: 'scaleX(-1)' }}>
+          <svg viewBox="0 0 200 200" fill="none">
+            <path d="M10 190 Q 60 120, 150 110 Q 110 160, 10 190 Z" fill="#047857" opacity="0.8" />
+            <path d="M10 190 Q 90 90, 180 80 Q 130 140, 10 190 Z" fill="#10B981" opacity="0.65" />
+            <path d="M10 190 Q 40 70, 120 50 Q 80 120, 10 190 Z" fill="#065F46" opacity="0.85" />
+          </svg>
+        </div>
+
+        {/* 1. Main Centered Headline (Compact for direct view without scrolling) */}
+        <h1
+          style={{
+            fontSize: '40px',
+            fontWeight: 850,
+            lineHeight: 1.15,
+            letterSpacing: '-0.03em',
+            color: '#111827',
+            margin: '0 0 4px 0',
+            zIndex: 3
+          }}
+        >
+          Teach Smarter. <span style={{ color: '#10B981' }}>Learn Better.</span>
+        </h1>
+
+        <div
+          style={{
+            fontSize: '24px',
+            fontWeight: 800,
+            color: '#1F2937',
+            letterSpacing: '-0.02em',
+            margin: '0 0 8px 0',
+            zIndex: 3
+          }}
+        >
+          All in One Place.
+        </div>
+
+        {/* 2. Subtitle */}
+        <p
+          style={{
+            fontSize: '14.5px',
+            lineHeight: 1.5,
+            color: '#4B5563',
+            maxWidth: '620px',
+            margin: '0 auto 16px auto',
+            zIndex: 3
+          }}
+        >
+          Create lessons, generate quizzes, engage students, track progress and bring learning into one intelligent platform.
+        </p>
+
+        {/* 3. Action Buttons */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '14px', marginBottom: '22px', zIndex: 3 }}>
+          <button
+            onClick={() => setRole('teacher')}
+            style={{
+              padding: '10px 24px',
+              fontSize: '13.5px',
+              fontWeight: 700,
+              backgroundColor: '#0B3B2E',
+              color: '#FFFFFF',
+              border: 'none',
+              borderRadius: '9999px',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              boxShadow: '0 6px 18px rgba(11, 59, 46, 0.25)',
+              transition: 'all 0.15s ease'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-1px)'; e.currentTarget.style.boxShadow = '0 8px 22px rgba(11, 59, 46, 0.32)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 6px 18px rgba(11, 59, 46, 0.25)'; }}
+          >
+            Get Started as Teacher →
+          </button>
+
+          <button
+            onClick={() => setRole('student')}
+            style={{
+              padding: '9px 22px',
+              fontSize: '13.5px',
+              fontWeight: 600,
+              backgroundColor: '#FFFFFF',
+              color: '#111827',
+              border: '1.5px solid #D1D5DB',
+              borderRadius: '9999px',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)',
+              transition: 'all 0.15s ease'
+            }}
+            onMouseEnter={e => e.currentTarget.style.borderColor = '#9CA3AF'}
+            onMouseLeave={e => e.currentTarget.style.borderColor = '#D1D5DB'}
+          >
+            Start Learning →
+          </button>
+        </div>
+
+        {/* 4. Centerpiece Illustration & Floating Interactive Cards */}
+        <div
+          style={{
+            position: 'relative',
+            width: '100%',
+            maxWidth: '1120px',
+            margin: '0 auto',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}
+        >
+          {/* Main 3D Cartoon Classroom Capsule Frame */}
+          <div
+            style={{
+              position: 'relative',
+              width: '100%',
+              maxWidth: '760px',
+              height: '330px',
+              borderRadius: '110px 110px 85px 85px / 130px 130px 100px 100px',
+              overflow: 'hidden',
+              border: '3.5px solid #FFFFFF',
+              boxShadow: '0 20px 50px -10px rgba(13, 148, 136, 0.22), 0 8px 24px rgba(0, 0, 0, 0.06)',
+              zIndex: 5,
+              backgroundColor: '#ECFDF5'
+            }}
+          >
+            <img
+              src="/hero-cartoon-classroom.jpg"
+              alt="EducateX Hub 3D Cartoon Classroom"
               style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '8px',
-                backgroundColor: '#ECFDF5',
-                border: '1px solid #A7F3D0',
-                padding: '6px 14px',
-                borderRadius: '9999px',
-                alignSelf: 'flex-start'
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center 18%',
+                display: 'block'
               }}
-            >
-              <GraduationCap size={14} color="#0F766E" />
-              <span style={{ fontSize: '13px', fontWeight: 700, color: '#0F766E' }}>
-                Modern Education Platform
-              </span>
-            </div>
+            />
+          </div>
 
-            {/* Main Headline */}
-            <h1
-              style={{
-                fontSize: '56px',
-                fontWeight: 800,
-                lineHeight: 1.12,
-                letterSpacing: '-0.03em',
-                color: '#1C1917'
-              }}
-            >
-              Learn Smarter.<br />
-              <span style={{ color: '#0F766E' }}>Teach Better.</span>
-            </h1>
-
-            {/* Subtitle */}
-            <p
-              style={{
-                fontSize: '17px',
-                lineHeight: 1.55,
-                color: '#57534E',
-                maxWidth: '520px'
-              }}
-            >
-              Educatex Hub is an AI-powered platform that makes teaching, learning and assessment easier, smarter and more engaging — all in one place.
-            </p>
-
-            {/* Pill CTA Buttons */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '10px' }}>
-              <button
-                onClick={() => setRole('teacher')}
-                style={{
-                  padding: '14px 28px',
-                  fontSize: '15px',
-                  fontWeight: 700,
-                  backgroundColor: '#0F766E',
-                  color: '#FFFFFF',
-                  border: 'none',
-                  borderRadius: '9999px',
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  boxShadow: '0 6px 18px rgba(15, 118, 110, 0.3)',
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                Get Started as Teacher →
-              </button>
-
-              <button
-                onClick={() => setRole('student')}
-                style={{
-                  padding: '13px 26px',
-                  fontSize: '15px',
-                  fontWeight: 600,
-                  backgroundColor: '#FFFFFF',
-                  color: '#1C1917',
-                  border: '1.5px solid #D6D3D1',
-                  borderRadius: '9999px',
-                  cursor: 'pointer',
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '8px',
-                  transition: 'all 0.15s ease'
-                }}
-              >
-                Start Learning →
-              </button>
-            </div>
-
-            {/* Social Proof Avatars Cluster */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginTop: '16px' }}>
-              <div style={{ display: 'flex' }}>
-                {[
-                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=80&h=80&q=80',
-                  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=80&h=80&q=80',
-                  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&h=80&q=80',
-                  'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=80&h=80&q=80'
-                ].map((src, i) => (
-                  <img
-                    key={i}
-                    src={src}
-                    alt="User"
-                    style={{
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '50%',
-                      border: '2px solid #FFFFFF',
-                      marginLeft: i > 0 ? '-10px' : '0',
-                      objectFit: 'cover'
-                    }}
-                  />
-                ))}
+          {/* Floating Card 1: AI Quiz Generator (Left) */}
+          <div
+            onClick={() => setRole('teacher')}
+            style={{
+              position: 'absolute',
+              left: '0px',
+              top: '24px',
+              zIndex: 10,
+              backgroundColor: '#FFFFFF',
+              borderRadius: '18px',
+              padding: '10px 14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              boxShadow: '0 14px 30px rgba(0, 0, 0, 0.08), 0 3px 10px rgba(0, 0, 0, 0.03)',
+              border: '1px solid rgba(240, 253, 250, 0.9)',
+              cursor: 'pointer',
+              transform: 'rotate(-2deg)',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+              width: '220px'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'rotate(0deg) translateY(-3px)'; e.currentTarget.style.boxShadow = '0 18px 36px rgba(0,0,0,0.12)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'rotate(-2deg) translateY(0)'; e.currentTarget.style.boxShadow = '0 14px 30px rgba(0,0,0,0.08)'; }}
+          >
+            <img
+              src="/card-ai-quiz.jpg"
+              alt="AI Quiz Generator"
+              style={{ width: '48px', height: '48px', borderRadius: '10px', objectFit: 'cover', boxShadow: '0 3px 8px rgba(0,0,0,0.06)' }}
+            />
+            <div style={{ flex: 1, textAlign: 'left' }}>
+              <div style={{ fontSize: '13px', fontWeight: 800, color: '#111827', lineHeight: 1.2 }}>
+                AI Quiz Generator
               </div>
-              <span style={{ fontSize: '13.5px', color: '#78716C', fontWeight: 500 }}>
-                Join <strong>10,000+</strong> students & teachers who are already part of Educatex Hub
-              </span>
+              <div style={{ fontSize: '11px', color: '#6B7280', marginTop: '2px' }}>
+                Generate quizzes instantly
+              </div>
+            </div>
+            <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#064E3B', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFFFFF', flexShrink: 0 }}>
+              <ChevronRight size={13} />
             </div>
           </div>
 
-          {/* Right Hero Column: Organic Green Backdrop + Hero Photos + Floating UI Cards */}
-          <div style={{ position: 'relative', minHeight: '520px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            {/* Organic Soft Green Curved Background Blob */}
-            <div
-              style={{
-                position: 'absolute',
-                width: '90%',
-                height: '88%',
-                backgroundColor: '#A7F3D0',
-                opacity: 0.55,
-                borderRadius: '42% 58% 70% 30% / 45% 45% 55% 55%',
-                filter: 'blur(28px)',
-                zIndex: 1
-              }}
+          {/* Floating Card 2: Live Competition (Right Top) */}
+          <div
+            onClick={() => setRole('competition')}
+            style={{
+              position: 'absolute',
+              right: '0px',
+              top: '12px',
+              zIndex: 10,
+              backgroundColor: '#FFFFFF',
+              borderRadius: '18px',
+              padding: '10px 14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              boxShadow: '0 14px 30px rgba(0, 0, 0, 0.08), 0 3px 10px rgba(0, 0, 0, 0.03)',
+              border: '1px solid rgba(240, 253, 250, 0.9)',
+              cursor: 'pointer',
+              transform: 'rotate(2deg)',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+              width: '220px'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'rotate(0deg) translateY(-3px)'; e.currentTarget.style.boxShadow = '0 18px 36px rgba(0,0,0,0.12)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'rotate(2deg) translateY(0)'; e.currentTarget.style.boxShadow = '0 14px 30px rgba(0,0,0,0.08)'; }}
+          >
+            <img
+              src="/card-live-competition.jpg"
+              alt="Live Competition"
+              style={{ width: '48px', height: '48px', borderRadius: '10px', objectFit: 'cover', boxShadow: '0 3px 8px rgba(0,0,0,0.06)' }}
             />
-
-            {/* Playful Doodle Annotation */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '-10px',
-                right: '40px',
-                fontSize: '13px',
-                fontWeight: 700,
-                color: '#0F766E',
-                fontStyle: 'italic',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                zIndex: 15
-              }}
-            >
-              <span>One Platform Endless Possibilities</span>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0F766E" strokeWidth="2">
-                <path d="M4 12c4-4 8 4 12 0" strokeDasharray="3 3" />
-              </svg>
-            </div>
-
-            {/* Main Teacher & Student Photo Container */}
-            <div
-              style={{
-                position: 'relative',
-                zIndex: 5,
-                width: '100%',
-                maxWidth: '520px',
-                borderRadius: '24px',
-                overflow: 'hidden',
-                boxShadow: '0 20px 45px rgba(19, 78, 74, 0.15)',
-                border: '4px solid #FFFFFF'
-              }}
-            >
-              <img
-                src="https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=1000&q=80"
-                alt="Teacher helping student with digital tablet in modern university classroom"
-                style={{ width: '100%', height: '390px', objectFit: 'cover', display: 'block' }}
-              />
-            </div>
-
-            {/* Floating Card 1: AI Quiz Generator (Top Left) */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '12px',
-                left: '-24px',
-                zIndex: 12,
-                backgroundColor: '#FFFFFF',
-                borderRadius: '16px',
-                padding: '14px 18px',
-                boxShadow: '0 12px 28px rgba(0,0,0,0.12)',
-                border: '1px solid #E7E5E4',
-                width: '200px'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-                <FileText size={13} color="#0F766E" />
-                <span style={{ fontSize: '12px', fontWeight: 800, color: '#134E4A' }}>Quiz Generator</span>
+            <div style={{ flex: 1, textAlign: 'left' }}>
+              <div style={{ fontSize: '13px', fontWeight: 800, color: '#111827', lineHeight: 1.2 }}>
+                Live Competition
               </div>
-              <div style={{ padding: '6px 10px', backgroundColor: '#FAFAF9', borderRadius: '8px', border: '1px solid #E7E5E4', fontSize: '11.5px', color: '#57534E', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span>Chemistry</span>
-                <ChevronDown size={12} />
-              </div>
-              <div style={{ padding: '6px 10px', backgroundColor: '#0F766E', borderRadius: '8px', color: '#FFFFFF', fontSize: '11px', fontWeight: 700, textAlign: 'center' }}>
-                Generate Quiz
+              <div style={{ fontSize: '11px', color: '#6B7280', marginTop: '2px' }}>
+                Engage students in real-time
               </div>
             </div>
+            <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#064E3B', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFFFFF', flexShrink: 0 }}>
+              <ChevronRight size={13} />
+            </div>
+          </div>
 
-            {/* Floating Card 2: Create Presentation (Middle Left) */}
-            <div
-              style={{
-                position: 'absolute',
-                bottom: '90px',
-                left: '-32px',
-                zIndex: 12,
-                backgroundColor: '#FFFFFF',
-                borderRadius: '14px',
-                padding: '12px 16px',
-                boxShadow: '0 10px 24px rgba(0,0,0,0.1)',
-                border: '1px solid #E7E5E4',
-                width: '180px'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-                <Presentation size={14} color="#0F766E" />
-                <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#1C1917' }}>Create Presentation</span>
+          {/* Floating Card 3: Student Progress (Right Bottom) */}
+          <div
+            onClick={() => setRole('student')}
+            style={{
+              position: 'absolute',
+              right: '12px',
+              bottom: '22px',
+              zIndex: 10,
+              backgroundColor: '#FFFFFF',
+              borderRadius: '18px',
+              padding: '10px 14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              boxShadow: '0 14px 30px rgba(0, 0, 0, 0.08), 0 3px 10px rgba(0, 0, 0, 0.03)',
+              border: '1px solid rgba(240, 253, 250, 0.9)',
+              cursor: 'pointer',
+              transform: 'rotate(-1deg)',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+              width: '220px'
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'rotate(0deg) translateY(-3px)'; e.currentTarget.style.boxShadow = '0 18px 36px rgba(0,0,0,0.12)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'rotate(-1deg) translateY(0)'; e.currentTarget.style.boxShadow = '0 14px 30px rgba(0,0,0,0.08)'; }}
+          >
+            <img
+              src="/card-student-progress.jpg"
+              alt="Student Progress"
+              style={{ width: '48px', height: '48px', borderRadius: '10px', objectFit: 'cover', boxShadow: '0 3px 8px rgba(0,0,0,0.06)' }}
+            />
+            <div style={{ flex: 1, textAlign: 'left' }}>
+              <div style={{ fontSize: '13px', fontWeight: 800, color: '#111827', lineHeight: 1.2 }}>
+                Student Progress
               </div>
-              <div style={{ height: '50px', backgroundColor: '#F0FDFA', borderRadius: '8px', border: '1px solid #A7F3D0', padding: '6px', display: 'flex', gap: '6px' }}>
-                <div style={{ width: '40%', backgroundColor: '#2DD4BF', borderRadius: '4px' }} />
-                <div style={{ width: '60%', display: 'flex', flexDirection: 'column', gap: '4px', justifyContent: 'center' }}>
-                  <div style={{ height: '4px', backgroundColor: '#99F6E4', borderRadius: '2px' }} />
-                  <div style={{ height: '4px', backgroundColor: '#CCFBF1', borderRadius: '2px' }} />
-                </div>
+              <div style={{ fontSize: '11px', color: '#6B7280', marginTop: '2px' }}>
+                Track learning and performance
               </div>
             </div>
-
-            {/* Floating Card 3: Live Game (Top Right) */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '28px',
-                right: '-28px',
-                zIndex: 12,
-                backgroundColor: '#FFFFFF',
-                borderRadius: '16px',
-                padding: '14px 18px',
-                boxShadow: '0 12px 28px rgba(0,0,0,0.12)',
-                border: '1px solid #E7E5E4',
-                width: '210px'
-              }}
-            >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <Trophy size={14} color="#DC2626" />
-                  <span style={{ fontSize: '12px', fontWeight: 800, color: '#1C1917' }}>Live Game</span>
-                </div>
-                <QrCode size={13} color="#0F766E" />
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <div style={{ height: '8px', width: '100%', backgroundColor: '#38BDF8', borderRadius: '4px' }} />
-                <div style={{ height: '8px', width: '80%', backgroundColor: '#F59E0B', borderRadius: '4px' }} />
-                <div style={{ height: '8px', width: '92%', backgroundColor: '#10B981', borderRadius: '4px' }} />
-              </div>
-            </div>
-
-            {/* Floating Card 4: Student Progress (Bottom Right) */}
-            <div
-              style={{
-                position: 'absolute',
-                bottom: '36px',
-                right: '-20px',
-                zIndex: 12,
-                backgroundColor: '#FFFFFF',
-                borderRadius: '16px',
-                padding: '12px 18px',
-                boxShadow: '0 12px 28px rgba(0,0,0,0.12)',
-                border: '1px solid #E7E5E4',
-                width: '185px'
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-                <LineChart size={13} color="#0F766E" />
-                <span style={{ fontSize: '12px', fontWeight: 700, color: '#1C1917' }}>Student Progress</span>
-              </div>
-              <div style={{ display: 'flex', alignItems: 'flex-end', gap: '5px', height: '36px', paddingTop: '4px' }}>
-                {[35, 60, 45, 80, 70, 95].map((h, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      flex: 1,
-                      height: `${h}%`,
-                      backgroundColor: i === 5 ? '#0F766E' : '#A7F3D0',
-                      borderRadius: '3px'
-                    }}
-                  />
-                ))}
-              </div>
+            <div style={{ width: '24px', height: '24px', borderRadius: '50%', backgroundColor: '#064E3B', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#FFFFFF', flexShrink: 0 }}>
+              <ChevronRight size={13} />
             </div>
           </div>
         </div>
