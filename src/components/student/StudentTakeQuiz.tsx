@@ -1109,7 +1109,7 @@ export const StudentTakeQuiz: React.FC = () => {
             </Button>
             <Button
               variant="primary"
-              onClick={() => setStudentView('student_dashboard')}
+              onClick={() => setStudentView('dashboard')}
             >
               Back to Dashboard
             </Button>
