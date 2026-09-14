@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Trophy, CheckCircle2, Clock, RotateCcw, ArrowRight } from 'lucide-react';
 import { Button } from '../../common/Button';
+import { playCorrectChime, playTickSound, playCompleteFanfare } from '../../../utils/soundEffects';
 
 interface WordSearchGameProps {
   data?: {
@@ -38,6 +39,34 @@ export const WordSearchGame: React.FC<WordSearchGameProps> = ({
   const [foundWords, setFoundWords] = useState<string[]>([]);
   const [selectedCells, setSelectedCells] = useState<{ r: number; c: number }[]>([]);
   const [score, setScore] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(120); // 2-minute timer
+
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      const accuracy = Math.round((foundWords.length / words.length) * 100);
+      onComplete(score, accuracy);
+      return;
+    }
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        if (prev <= 6 && prev > 1) {
+          playTickSound();
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft, foundWords.length, words.length, score]);
 
   const isCellSelected = (r: number, c: number) => {
     return selectedCells.some(cell => cell.r === r && cell.c === c);
@@ -60,8 +89,10 @@ export const WordSearchGame: React.FC<WordSearchGameProps> = ({
       setFoundWords(newFound);
       setScore(prev => prev + 250);
       setSelectedCells([]);
+      playCorrectChime();
 
       if (newFound.length === words.length) {
+        playCompleteFanfare();
         setTimeout(() => {
           onComplete(score + 250, 100);
         }, 800);
@@ -105,6 +136,27 @@ export const WordSearchGame: React.FC<WordSearchGameProps> = ({
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          {/* 2-Minute Round Timer */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              backgroundColor: timeLeft <= 15 ? 'rgba(239,68,68,0.2)' : timeLeft <= 30 ? 'rgba(245,158,11,0.2)' : 'rgba(255,255,255,0.06)',
+              border: `1.5px solid ${timeLeft <= 15 ? '#EF4444' : timeLeft <= 30 ? '#F59E0B' : 'rgba(255,255,255,0.15)'}`,
+              padding: '6px 14px',
+              borderRadius: '10px'
+            }}
+          >
+            <Clock size={16} color={timeLeft <= 15 ? '#EF4444' : timeLeft <= 30 ? '#F59E0B' : 'var(--color-lime-accent)'} />
+            <div>
+              <span style={{ fontSize: '10px', color: '#94A3B8', display: 'block', fontWeight: 800 }}>2-MIN TIMER</span>
+              <span style={{ fontSize: '18px', fontWeight: 900, color: timeLeft <= 15 ? '#EF4444' : timeLeft <= 30 ? '#F59E0B' : '#FFFFFF', fontFamily: 'monospace' }}>
+                {formatTime(timeLeft)}
+              </span>
+            </div>
+          </div>
+
           <div style={{ textAlign: 'right' }}>
             <span style={{ fontSize: '11px', color: '#94A3B8' }}>Current Score</span>
             <div style={{ fontSize: '18px', fontWeight: 900, color: 'var(--color-lime-accent)' }}>

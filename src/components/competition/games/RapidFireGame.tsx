@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Zap, Flame, Clock, ArrowRight, CheckCircle2, XCircle } from 'lucide-react';
 import { Button } from '../../common/Button';
+import { playCorrectChime, playWrongSound, playCompleteFanfare } from '../../../utils/soundEffects';
 
 interface RapidFireGameProps {
   data?: {
@@ -88,9 +89,25 @@ export const RapidFireGame: React.FC<RapidFireGameProps> = ({
       setScore(s => s + added);
       setStreak(st => st + 1);
       setCorrectCount(c => c + 1);
+      playCorrectChime();
     } else {
       setStreak(0);
+      playWrongSound();
     }
+
+    // Automatically advance directly to next question!
+    setTimeout(() => {
+      if (currentIdx < questions.length - 1) {
+        setCurrentIdx(i => i + 1);
+        setSelectedOpt(null);
+        setIsAnswered(false);
+        setTimer(10);
+      } else {
+        playCompleteFanfare();
+        const accuracy = Math.round(((correctCount + (isCorrect ? 1 : 0)) / questions.length) * 100);
+        onComplete(score + (isCorrect ? 500 : 0), accuracy);
+      }
+    }, 850);
   };
 
   const handleNext = () => {

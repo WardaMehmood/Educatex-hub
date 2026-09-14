@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Check, X, ArrowRight, Flame, Clock } from 'lucide-react';
 import { Button } from '../../common/Button';
+import { playCorrectChime, playWrongSound, playCompleteFanfare } from '../../../utils/soundEffects';
 
 interface TrueFalseGameProps {
   data?: {
@@ -85,9 +86,25 @@ export const TrueFalseGame: React.FC<TrueFalseGameProps> = ({
       setScore(s => s + added);
       setStreak(st => st + 1);
       setCorrectCount(c => c + 1);
+      playCorrectChime();
     } else {
       setStreak(0);
+      playWrongSound();
     }
+
+    // Automatically advance directly to the next statement!
+    setTimeout(() => {
+      if (currentIdx < statements.length - 1) {
+        setCurrentIdx(i => i + 1);
+        setSelectedVal(null);
+        setIsAnswered(false);
+        setTimer(12);
+      } else {
+        playCompleteFanfare();
+        const accuracy = Math.round(((correctCount + (isCorrect ? 1 : 0)) / statements.length) * 100);
+        onComplete(score + (isCorrect ? 200 : 0), accuracy);
+      }
+    }, 950);
   };
 
   const handleNext = () => {

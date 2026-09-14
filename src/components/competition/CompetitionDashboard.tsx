@@ -122,21 +122,20 @@ export const CompetitionDashboard: React.FC = () => {
           <div>
             <h2 style={{ fontSize: '16px', fontWeight: 800, color: '#FFFFFF', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
               <Gamepad2 size={18} color="var(--color-lime-accent)" />
-              Educational Competition Game Formats
+              Educational Games & Showdowns
             </h2>
             <span style={{ fontSize: '11.5px', color: '#94A3B8' }}>
-              Select an educational game type to launch a live multiplayer battle or create a competition
+              Select a game format to launch a live battle or challenge your peers!
             </span>
           </div>
 
           {/* Category Filter Pills */}
           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
             {[
-              { id: 'all', label: 'All Formats (10)' },
-              { id: 'quizzes', label: 'Quizzes & Blitz (3)' },
-              { id: 'words', label: 'Word Puzzles (3)' },
-              { id: 'logic', label: 'Memory & Pairs (2)' },
-              { id: 'visual', label: 'Interactive Maps (1)' }
+              { id: 'all', label: `All Games (${COMPETITION_GAMES.length})` },
+              { id: 'quizzes', label: 'Quizzes & Fast Rounds' },
+              { id: 'words', label: 'Word Games' },
+              { id: 'logic', label: 'Matching & Pairs' }
             ].map(cat => (
               <button
                 key={cat.id}

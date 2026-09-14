@@ -26,9 +26,7 @@ import { CrosswordGame } from './games/CrosswordGame';
 import { MatchingPairsGame } from './games/MatchingPairsGame';
 import { FillInBlanksGame } from './games/FillInBlanksGame';
 import { AlphabetChallengeGame } from './games/AlphabetChallengeGame';
-import { MemoryMatchGame } from './games/MemoryMatchGame';
 import { TrueFalseGame } from './games/TrueFalseGame';
-import { MapQuizGame } from './games/MapQuizGame';
 import { RapidFireGame } from './games/RapidFireGame';
 
 // Kahoot geometric shape badges and vibrant 4-color palette
@@ -115,9 +113,6 @@ export const CompetitionLiveSession: React.FC = () => {
           playTone(330, 'square', 0.3);
           handleRevealAnswer();
           return 0;
-        }
-        if (prev <= 5) {
-          playTone(600 + (6 - prev) * 50, 'sine', 0.08); // ticking sound
         }
         // Increment answer count randomly like Kahoot
         if (prev % 2 === 0) {
@@ -264,22 +259,8 @@ export const CompetitionLiveSession: React.FC = () => {
             onExit={() => setCompetitionView('dashboard')}
           />
         )}
-        {currentComp.gameType === 'memory' && (
-          <MemoryMatchGame
-            data={currentComp.gameData}
-            onComplete={handleGameComplete}
-            onExit={() => setCompetitionView('dashboard')}
-          />
-        )}
         {currentComp.gameType === 'true_false' && (
           <TrueFalseGame
-            data={currentComp.gameData}
-            onComplete={handleGameComplete}
-            onExit={() => setCompetitionView('dashboard')}
-          />
-        )}
-        {currentComp.gameType === 'map_quiz' && (
-          <MapQuizGame
             data={currentComp.gameData}
             onComplete={handleGameComplete}
             onExit={() => setCompetitionView('dashboard')}

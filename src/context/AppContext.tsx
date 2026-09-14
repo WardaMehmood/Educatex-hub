@@ -18,6 +18,7 @@ import {
   SAMPLE_STUDENT_LEARNING_PLAN,
   INITIAL_COMPETITIONS
 } from '../data/mockData';
+import { COMPETITION_GAMES } from '../data/competitionGamesData';
 
 export type TeacherView =
   | 'dashboard'
@@ -191,6 +192,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const cleaned = parsed.filter(p => !['comp-bio-1', 'comp-chem-1', 'comp-phys-1', 'comp-math-1'].includes(p.id));
       if (cleaned.length === 0) return INITIAL_COMPETITIONS;
       const updated = cleaned.map(p => {
+        if (p.gameType === 'crossword') {
+          const hasClash = p.gameData?.down?.some((d: any) => d.word === 'COW') || p.gameData?.across?.some((a: any) => a.word === 'CAT');
+          if (hasClash) {
+            const cw = COMPETITION_GAMES.find(g => g.id === 'crossword');
+            return {
+              ...p,
+              gameData: cw?.sampleData
+            };
+          }
+        }
         const initial = INITIAL_COMPETITIONS.find(c => c.id === p.id);
         if (!initial) return p;
         return {

@@ -151,25 +151,6 @@ export const CompetitionGameCard: React.FC<CompetitionGameCardProps> = ({
           </svg>
         );
 
-      case 'memory':
-        return (
-          <svg width="76" height="76" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="80" height="80" rx="16" fill="#FEF3C7" stroke="#FDE68A" strokeWidth="1.5" />
-            {/* 4 Cards Grid */}
-            <rect x="15" y="15" width="22" height="22" rx="4" fill="#0F766E" />
-            <circle cx="26" cy="26" r="5" fill="#5EEAD4" />
-
-            <rect x="43" y="15" width="22" height="22" rx="4" fill="#FFFFFF" stroke="#D1D5DB" />
-            <text x="54" y="29" fontSize="11" fontWeight="900" fill="#9CA3AF" textAnchor="middle">?</text>
-
-            <rect x="15" y="43" width="22" height="22" rx="4" fill="#FFFFFF" stroke="#D1D5DB" />
-            <text x="26" y="57" fontSize="11" fontWeight="900" fill="#9CA3AF" textAnchor="middle">?</text>
-
-            <rect x="43" y="43" width="22" height="22" rx="4" fill="#0F766E" />
-            <circle cx="54" cy="54" r="5" fill="#5EEAD4" />
-          </svg>
-        );
-
       case 'true_false':
         return (
           <svg width="76" height="76" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -182,21 +163,6 @@ export const CompetitionGameCard: React.FC<CompetitionGameCardProps> = ({
             <rect x="42" y="16" width="24" height="48" rx="8" fill="#EF4444" />
             <path d="M 49 37 L 59 47 M 59 37 L 49 47" stroke="#FFFFFF" strokeWidth="3" strokeLinecap="round" />
             <text x="54" y="27" fontSize="6.5" fontWeight="900" fill="#FFFFFF" textAnchor="middle">FALSE</text>
-          </svg>
-        );
-
-      case 'map_quiz':
-        return (
-          <svg width="76" height="76" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect width="80" height="80" rx="16" fill="#0284C7" />
-            {/* Land masses */}
-            <path d="M 12 30 C 18 20, 30 25, 28 38 C 26 48, 16 52, 14 44 Z" fill="#22C55E" />
-            <path d="M 45 22 C 55 18, 68 22, 66 36 C 64 45, 52 48, 48 38 Z" fill="#22C55E" />
-            <path d="M 38 46 C 44 42, 52 50, 48 62 C 44 68, 36 60, 38 46 Z" fill="#22C55E" />
-            {/* Pins with yellow dots */}
-            <circle cx="25" cy="32" r="3.5" fill="#FACC15" stroke="#1E293B" strokeWidth="1.5" />
-            <circle cx="55" cy="28" r="3.5" fill="#FACC15" stroke="#1E293B" strokeWidth="1.5" />
-            <circle cx="44" cy="52" r="3.5" fill="#FACC15" stroke="#1E293B" strokeWidth="1.5" />
           </svg>
         );
 

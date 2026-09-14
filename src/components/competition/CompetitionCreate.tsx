@@ -32,97 +32,87 @@ import { CrosswordGame } from './games/CrosswordGame';
 import { MatchingPairsGame } from './games/MatchingPairsGame';
 import { FillInBlanksGame } from './games/FillInBlanksGame';
 import { AlphabetChallengeGame } from './games/AlphabetChallengeGame';
-import { MemoryMatchGame } from './games/MemoryMatchGame';
 import { TrueFalseGame } from './games/TrueFalseGame';
-import { MapQuizGame } from './games/MapQuizGame';
 import { RapidFireGame } from './games/RapidFireGame';
 
 export const CompetitionCreate: React.FC = () => {
   const { role, addCompetition, setCompetitionView, setTeacherView, showToast } = useApp();
 
   const [selectedGameType, setSelectedGameType] = useState<CompetitionGameType>('quiz');
-  const [title, setTitle] = useState('National Academic Arena Showdown');
+  const [title, setTitle] = useState('Arena Showdown');
   const [format, setFormat] = useState<'simple' | 'game_style'>('game_style');
   const [teamFormation, setTeamFormation] = useState<'auto' | 'self_select' | 'host_assigned'>('auto');
   const [questionSource, setQuestionSource] = useState<'ai' | 'manual'>('ai');
   const [timePerQuestion, setTimePerQuestion] = useState(25);
 
   // Auto Generator State
-  const [autoSubject, setAutoSubject] = useState('Computer Science');
-  const [autoTopic, setAutoTopic] = useState('TCP Congestion Control & Network Protocols');
+  const [autoTopic, setAutoTopic] = useState('Animals & Fun Nature');
   const [autoQuestionCount, setAutoQuestionCount] = useState<number>(4);
-  const [autoDifficulty, setAutoDifficulty] = useState('Medium');
+  const [autoDifficulty, setAutoDifficulty] = useState('Easy');
   const [isGenerating, setIsGenerating] = useState(false);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
-  const [gameData, setGameData] = useState<any>(() => generateGameContent('quiz', 'TCP Congestion Control', 'Computer Science'));
+  const [gameData, setGameData] = useState<any>(() => generateGameContent('quiz', 'Animals & Fun Nature'));
 
-  // Dedicated state for each of the 10 game styles
-  const [wordSearchWords, setWordSearchWords] = useState<string[]>(['PYTHON', 'BINARY', 'ROUTER', 'PACKET', 'SOCKET', 'THREAD']);
+  // Dedicated state for kids game styles
+  const [wordSearchWords, setWordSearchWords] = useState<string[]>(['CAT', 'DOG', 'SUN', 'STAR', 'FISH', 'MOON']);
   const [newWordInput, setNewWordInput] = useState('');
 
   const [matchingPairsList, setMatchingPairsList] = useState<{ id: string; left: string; right: string }[]>([
-    { id: 'p-1', left: 'HTTP', right: 'Port 80 • Cleartext Web Protocol' },
-    { id: 'p-2', left: 'HTTPS', right: 'Port 443 • TLS Encrypted Web' },
-    { id: 'p-3', left: 'DNS', right: 'Port 53 • Domain Name Resolution' },
-    { id: 'p-4', left: 'SSH', right: 'Port 22 • Secure Remote Terminal' }
+    { id: 'p-1', left: '🐶 Dog', right: '🦴 Bone' },
+    { id: 'p-2', left: '🐱 Cat', right: '🥛 Bowl of Milk' },
+    { id: 'p-3', left: '🐝 Bee', right: '🍯 Sweet Honey' },
+    { id: 'p-4', left: '☀️ Sun', right: '🌻 Sunflower' }
   ]);
   const [newPairLeft, setNewPairLeft] = useState('');
   const [newPairRight, setNewPairRight] = useState('');
 
-  const [crosswordItems, setCrosswordItems] = useState<{ id: string; type: 'across' | 'down'; num: number; word: string; clue: string }[]>([
-    { id: 'cw-1', type: 'across', num: 1, word: 'TCP', clue: 'Reliable connection-oriented transport protocol' },
-    { id: 'cw-2', type: 'across', num: 3, word: 'DNS', clue: 'Translates domain names to IP addresses' },
-    { id: 'cw-3', type: 'down', num: 1, word: 'TLS', clue: 'Cryptographic protocol securing internet transport' },
-    { id: 'cw-4', type: 'down', num: 2, word: 'PORT', clue: '16-bit number identifying host network application' }
+  const [crosswordItems, setCrosswordItems] = useState<{ id: string; type: 'across' | 'down'; num: number; word: string; clue: string; hint?: string; row?: number; col?: number }[]>([
+    { id: 'cw-1', type: 'across', num: 1, word: 'STAR', clue: 'Twinkles brightly high in the night sky ⭐', hint: 'Twinkle twinkle little... (4 letters: S T A R)', row: 0, col: 0 },
+    { id: 'cw-2', type: 'across', num: 2, word: 'NEWS', clue: 'Daily stories and interesting world updates 📰', hint: 'What we read or watch for daily info (4 letters: N E W S)', row: 2, col: 0 },
+    { id: 'cw-3', type: 'down', num: 1, word: 'SUN', clue: 'Bright warm star that gives us daylight ☀️', hint: 'Big yellow star in daytime sky (3 letters: S U N)', row: 0, col: 0 },
+    { id: 'cw-4', type: 'down', num: 2, word: 'TREE', clue: 'Has green leaves and birds build nests here 🌳', hint: 'Grows tall in garden or forest (4 letters: T R E E)', row: 0, col: 1 },
+    { id: 'cw-5', type: 'down', num: 3, word: 'ROSE', clue: 'A beautiful fragrant red garden flower 🌹', hint: 'Sweet smelling red flower (4 letters: R O S E)', row: 0, col: 3 }
   ]);
   const [newCwType, setNewCwType] = useState<'across' | 'down'>('across');
   const [newCwNum, setNewCwNum] = useState(5);
   const [newCwWord, setNewCwWord] = useState('');
   const [newCwClue, setNewCwClue] = useState('');
+  const [newCwHint, setNewCwHint] = useState('');
 
   const [fillInBlanksList, setFillInBlanksList] = useState<{ id: string; textBefore: string; textAfter: string; correctWord: string; options: string }[]>([
-    { id: 'fib-1', textBefore: 'In computer networking, the', textAfter: 'layer guarantees end-to-end delivery of message streams.', correctWord: 'Transport', options: 'Transport, Physical, Application, Session' },
-    { id: 'fib-2', textBefore: 'Google BBR congestion control measures bottleneck bandwidth and minimum', textAfter: 'to cap in-flight data.', correctWord: 'RTT', options: 'RTT, Loss Rate, Window Size, Jitter' }
+    { id: 'fib-1', textBefore: 'The grass in the park is', textAfter: 'and fresh.', correctWord: 'Green', options: 'Green, Pink, Purple, Orange' },
+    { id: 'fib-2', textBefore: 'Little birds have wings and can', textAfter: 'high in the sky.', correctWord: 'Fly', options: 'Fly, Drive, Swim, Write' }
   ]);
   const [newFibBefore, setNewFibBefore] = useState('');
   const [newFibWord, setNewFibWord] = useState('');
   const [newFibAfter, setNewFibAfter] = useState('');
   const [newFibOpts, setNewFibOpts] = useState('');
 
-  const [alphabetList, setAlphabetList] = useState<{ letter: string; question: string; answer: string; hint: string }[]>([
-    { letter: 'A', question: 'Symmetric encryption standard approved by NIST in 2001 to replace DES.', answer: 'AES', hint: 'Advanced Encryption Standard' },
-    { letter: 'B', question: 'Congestion control protocol developed by Google measuring bottleneck bandwidth.', answer: 'BBR', hint: 'Bottleneck Bandwidth and RTT' },
-    { letter: 'C', question: 'Default Linux congestion control algorithm utilizing cubic window growth.', answer: 'CUBIC', hint: 'Uses wall-clock time t' },
-    { letter: 'D', question: 'Protocol translating domain names to IP addresses.', answer: 'DNS', hint: 'Port 53 service' }
-  ]);
-  const [newAlphaLetter, setNewAlphaLetter] = useState('E');
+  const [alphabetList, setAlphabetList] = useState<{ letter: string; question: string; answer: string; hint: string }[]>([]);
+  const [newAlphaLetter, setNewAlphaLetter] = useState('A');
   const [newAlphaQuestion, setNewAlphaQuestion] = useState('');
   const [newAlphaAnswer, setNewAlphaAnswer] = useState('');
   const [newAlphaHint, setNewAlphaHint] = useState('');
 
   const [memoryPairsList, setMemoryPairsList] = useState<{ id: string; term: string; definition: string }[]>([
-    { id: 'm-1', term: 'O(1)', definition: 'Hash Table Lookup' },
-    { id: 'm-2', term: 'O(log N)', definition: 'Binary Search' },
-    { id: 'm-3', term: 'FIFO', definition: 'Queue Structure' },
-    { id: 'm-4', term: 'LIFO', definition: 'Call Stack Frame' }
+    { id: 'm-1', term: '🦁 Lion', definition: 'King of Jungle' },
+    { id: 'm-2', term: '🍎 Apple', definition: 'Sweet Red Fruit' },
+    { id: 'm-3', term: '☀️ Sun', definition: 'Shines in Day' },
+    { id: 'm-4', term: '🌙 Moon', definition: 'Glows at Night' }
   ]);
   const [newMemTerm, setNewMemTerm] = useState('');
   const [newMemDef, setNewMemDef] = useState('');
 
   const [trueFalseList, setTrueFalseList] = useState<{ id: string; statement: string; isTrue: boolean; explanation: string }[]>([
-    { id: 'tf-1', statement: 'HTTP/3 operates over UDP using QUIC protocol instead of TCP.', isTrue: true, explanation: 'HTTP/3 uses QUIC (UDP) to eliminate head-of-line blocking.' },
-    { id: 'tf-2', statement: 'In Python, inserting at index 0 takes O(1) constant time.', isTrue: false, explanation: 'Inserting at index 0 shifts all elements, taking O(N) linear time.' },
-    { id: 'tf-3', statement: 'Hash collisions can be resolved using open addressing or separate chaining.', isTrue: true, explanation: 'Both techniques are standard collision resolution methods.' }
+    { id: 'tf-1', statement: 'The Sun is super hot and gives us daylight. ☀️', isTrue: true, explanation: 'The sun provides warm light and energy.' },
+    { id: 'tf-2', statement: 'Fish live in trees and can fly in the sky. 🐟', isTrue: false, explanation: 'Fish live and swim in water, not in trees!' },
+    { id: 'tf-3', statement: 'An elephant is the largest living animal on land. 🐘', isTrue: true, explanation: 'Elephants are huge and gentle giants!' }
   ]);
   const [newTfStatement, setNewTfStatement] = useState('');
   const [newTfVal, setNewTfVal] = useState(true);
   const [newTfExp, setNewTfExp] = useState('');
 
-  const [mapLocationsList, setMapLocationsList] = useState<{ id: string; name: string; region: string; hint: string; x: number; y: number }[]>([
-    { id: 'loc-1', name: 'Silicon Valley Hub', region: 'North America', hint: 'Palo Alto & SF Bay Area', x: 22, y: 38 },
-    { id: 'loc-2', name: 'CERN Collider', region: 'Europe', hint: 'Geneva Franco-Swiss border', x: 50, y: 32 },
-    { id: 'loc-3', name: 'Bengaluru Corridor', region: 'Asia', hint: 'Silicon Valley of India', x: 72, y: 55 }
-  ]);
+  const [mapLocationsList, setMapLocationsList] = useState<{ id: string; name: string; region: string; hint: string; x: number; y: number }[]>([]);
   const [newMapName, setNewMapName] = useState('');
   const [newMapRegion, setNewMapRegion] = useState('Global');
   const [newMapHint, setNewMapHint] = useState('');
@@ -131,18 +121,18 @@ export const CompetitionCreate: React.FC = () => {
     {
       id: 'cq-1',
       type: 'mcq',
-      question: 'Which symmetric cipher algorithm was standardized by NIST to replace DES in 2001?',
-      options: ['Blowfish', 'Rijndael (AES)', 'ChaCha20', 'RC4'],
-      correctAnswer: 'Rijndael (AES)',
-      explanation: 'The Belgian design Rijndael was selected as AES.'
+      question: 'Which animal is known as the King of the Jungle? 🦁',
+      options: ['Lion', 'Monkey', 'Elephant', 'Rabbit'],
+      correctAnswer: 'Lion',
+      explanation: 'The lion is called the king of the jungle because of its bravery and strength!'
     },
     {
       id: 'cq-2',
       type: 'mcq',
-      question: 'In TCP congestion control, which state corresponds to probe transmission at 1.25x / 0.75x pacing?',
-      options: ['Slow Start', 'ProbeBW', 'Fast Recovery', 'ProbeRTT'],
-      correctAnswer: 'ProbeBW',
-      explanation: 'Google BBR uses ProbeBW to test bottleneck capacity.'
+      question: 'How many days are there in a week? 📅',
+      options: ['7 days', '5 days', '10 days', '12 days'],
+      correctAnswer: '7 days',
+      explanation: 'There are 7 days from Monday to Sunday!'
     }
   ]);
 
@@ -150,155 +140,108 @@ export const CompetitionCreate: React.FC = () => {
     setIsGenerating(true);
     setTimeout(() => {
       if (selectedGameType === 'word_search') {
-        const content = generateGameContent('word_search', autoTopic, autoSubject);
+        const content = generateGameContent('word_search', autoTopic);
         if (content?.words) {
           setWordSearchWords(content.words);
         }
-        showToast(`AI generated ${content?.words?.length || 6} keywords for "${autoTopic}"!`);
-      } else if (selectedGameType === 'crossword') {
-        const content = generateGameContent('crossword', autoTopic, autoSubject);
-        if (content?.across && content?.down) {
-          const items: any[] = [
-            ...content.across.map((a: any) => ({ id: `cw-a-${a.num}`, type: 'across' as const, num: a.num, word: a.word, clue: a.clue })),
-            ...content.down.map((d: any) => ({ id: `cw-d-${d.num}`, type: 'down' as const, num: d.num, word: d.word, clue: d.clue }))
-          ];
-          setCrosswordItems(items);
-        }
-        showToast(`AI generated crossword clues for "${autoTopic}"!`);
+        showToast(`Generated ${content?.words?.length || 6} words for "${autoTopic}"!`);
       } else if (selectedGameType === 'matching_pairs') {
-        const content = generateGameContent('matching_pairs', autoTopic, autoSubject);
+        const content = generateGameContent('matching_pairs', autoTopic);
         if (content?.pairs) {
           setMatchingPairsList(content.pairs);
         }
-        showToast(`AI generated concept pairs for "${autoTopic}"!`);
+        showToast(`Generated concept pairs for "${autoTopic}"!`);
       } else if (selectedGameType === 'fill_in_blanks') {
-        const content = generateGameContent('fill_in_blanks', autoTopic, autoSubject);
+        const content = generateGameContent('fill_in_blanks', autoTopic);
         if (content?.questions) {
           setFillInBlanksList(content.questions.map((q: any) => ({
             id: q.id,
             textBefore: q.textBefore,
             textAfter: q.textAfter,
             correctWord: q.correctWord,
-            options: q.options.join(', ')
+            options: Array.isArray(q.options) ? q.options.join(', ') : q.options
           })));
         }
-        showToast(`AI generated fill-in-the-blank sentences for "${autoTopic}"!`);
-      } else if (selectedGameType === 'alphabet') {
-        const content = generateGameContent('alphabet', autoTopic, autoSubject);
-        if (content?.letters) {
-          setAlphabetList(content.letters);
-        }
-        showToast(`AI generated Alphabet Challenge prompts for "${autoTopic}"!`);
-      } else if (selectedGameType === 'memory') {
-        const content = generateGameContent('memory', autoTopic, autoSubject);
-        if (content?.cards) {
-          const pairs: any[] = [];
-          for (let i = 0; i < content.cards.length; i += 2) {
-            pairs.push({
-              id: `m-${i}`,
-              term: content.cards[i]?.text || '',
-              definition: content.cards[i+1]?.text || ''
-            });
-          }
-          setMemoryPairsList(pairs);
-        }
-        showToast(`AI generated Memory card pairs for "${autoTopic}"!`);
+        showToast(`Generated fill-in-the-blank sentences for "${autoTopic}"!`);
       } else if (selectedGameType === 'true_false') {
-        const content = generateGameContent('true_false', autoTopic, autoSubject);
+        const content = generateGameContent('true_false', autoTopic);
         if (content?.statements) {
           setTrueFalseList(content.statements);
         }
-        showToast(`AI generated True/False statements for "${autoTopic}"!`);
-      } else if (selectedGameType === 'map_quiz') {
-        const content = generateGameContent('map_quiz', autoTopic, autoSubject);
-        if (content?.locations) {
-          setMapLocationsList(content.locations);
+        showToast(`Generated True/False statements for "${autoTopic}"!`);
+      } else if (selectedGameType === 'crossword') {
+        const content = generateGameContent('crossword', autoTopic);
+        if (content?.across && content?.down) {
+          const items: any[] = [];
+          content.across.forEach((a: any) => {
+            items.push({
+              id: `cw-a-${a.num}`,
+              type: 'across',
+              num: a.num,
+              word: a.word,
+              clue: a.clue,
+              hint: a.hint,
+              row: a.row,
+              col: a.col
+            });
+          });
+          content.down.forEach((d: any) => {
+            items.push({
+              id: `cw-d-${d.num}`,
+              type: 'down',
+              num: d.num,
+              word: d.word,
+              clue: d.clue,
+              hint: d.hint,
+              row: d.row,
+              col: d.col
+            });
+          });
+          setCrosswordItems(items);
         }
-        showToast(`AI generated Map targets for "${autoTopic}"!`);
+        showToast(`Generated Crossword clues with student hints for "${autoTopic}"!`);
       } else {
-        // Quiz & Rapid Fire MCQs
-        let generated: ObjectiveQuestion[] = [];
-        const topicLower = (autoTopic + ' ' + autoSubject).toLowerCase();
-        if (topicLower.includes('tcp') || topicLower.includes('net') || topicLower.includes('cs') || topicLower.includes('computer')) {
-          generated = [
-            {
-              id: `aq-${Date.now()}-1`,
-              type: 'mcq',
-              question: 'Which TCP algorithm operates independently of RTT by using wall-clock time in its cubic growth function?',
-              options: ['TCP Reno', 'CUBIC', 'TCP Tahoe', 'TCP Vegas'],
-              correctAnswer: 'CUBIC',
-              explanation: 'CUBIC uses a cubic window function driven by real elapsed time t, preventing unfair RTT bias.'
-            },
-            {
-              id: `aq-${Date.now()}-2`,
-              type: 'mcq',
-              question: 'What physical quantities does Google BBR independently estimate to cap in-flight data at 1x BDP?',
-              options: ['Bottleneck Bandwidth & Minimum RTT', 'Packet Loss Rate & Queue Size', 'Window Size & Congestion Threshold', 'ACK Arrival Jitter & Hop Count'],
-              correctAnswer: 'Bottleneck Bandwidth & Minimum RTT',
-              explanation: 'BBR measures BtlBw (bottleneck bandwidth) and RTprop (minimum wire delay) to drain queues to zero.'
-            },
-            {
-              id: `aq-${Date.now()}-3`,
-              type: 'mcq',
-              question: 'What network crisis occurs when oversized router FIFO buffers create catastrophic latency without increasing throughput?',
-              options: ['Bufferbloat', 'TCP Silly Window Syndrome', 'SYN Flood Attack', 'Jitter Accumulation'],
-              correctAnswer: 'Bufferbloat',
-              explanation: 'Bufferbloat happens when excessive buffering holds packets for hundreds of milliseconds at bottleneck links.'
-            },
-            {
-              id: `aq-${Date.now()}-4`,
-              type: 'mcq',
-              question: 'In standard drop-tail queuing, what phenomenon causes concurrent TCP flows to simultaneously halve their windows?',
-              options: ['TCP Global Synchronization', 'Fast Retransmit Collapse', 'Exponential Backoff Desync', 'SACK Deadlock'],
-              correctAnswer: 'TCP Global Synchronization',
-              explanation: 'Tail-drop buffers drop incoming packets across all flows at once, triggering synchronous backoff.'
-            }
-          ];
-        } else if (topicLower.includes('bio') || topicLower.includes('cell')) {
-          generated = [
-            {
-              id: `aq-${Date.now()}-1`,
-              type: 'mcq',
-              question: 'Which organelle serves as the primary site of cellular ATP synthesis via oxidative phosphorylation?',
-              options: ['Mitochondria', 'Endoplasmic Reticulum', 'Golgi Apparatus', 'Lysosome'],
-              correctAnswer: 'Mitochondria',
-              explanation: 'Mitochondria generate the vast majority of cellular ATP via the electron transport chain.'
-            },
-            {
-              id: `aq-${Date.now()}-2`,
-              type: 'mcq',
-              question: 'In molecular genetics, which enzyme unwinds the double helix DNA during replication?',
-              options: ['DNA Helicase', 'DNA Ligase', 'RNA Polymerase', 'Topoisomerase'],
-              correctAnswer: 'DNA Helicase',
-              explanation: 'DNA Helicase breaks hydrogen bonds between nitrogenous base pairs to separate the two strands.'
-            }
-          ];
-        } else {
-          generated = [
-            {
-              id: `aq-${Date.now()}-1`,
-              type: 'mcq',
-              question: `What is the core fundamental principle governing ${autoTopic || 'this academic subject'}?`,
-              options: ['Axiomatic Foundation & Evidence-based Analysis', 'Random Empirical Observation', 'Rote Memorization of Historic Anecdotes', 'Unregulated Variable Induction'],
-              correctAnswer: 'Axiomatic Foundation & Evidence-based Analysis',
-              explanation: 'Rigorous analysis relies on first principles and verifiable experimental observations.'
-            },
-            {
-              id: `aq-${Date.now()}-2`,
-              type: 'mcq',
-              question: `Which methodology is standard when evaluating practical applications of ${autoTopic || 'this discipline'}?`,
-              options: ['Quantitative modeling and controlled testing', 'Arbitrary trial without metric baselines', 'Subjective preference without review', 'Ignoring boundary conditions'],
-              correctAnswer: 'Quantitative modeling and controlled testing',
-              explanation: 'Standard scientific and academic methodologies require controlled evaluation and repeatable testing.'
-            }
-          ];
-        }
+        // Kids Quiz & Rapid Fire MCQs
+        const generated: ObjectiveQuestion[] = [
+          {
+            id: `aq-${Date.now()}-1`,
+            type: 'mcq',
+            question: 'What color do you get when you mix Red and Yellow? 🎨',
+            options: ['Orange', 'Green', 'Purple', 'Blue'],
+            correctAnswer: 'Orange',
+            explanation: 'Mixing red and yellow creates vibrant orange!'
+          },
+          {
+            id: `aq-${Date.now()}-2`,
+            type: 'mcq',
+            question: 'Which sweet golden treat do honeybees make? 🐝',
+            options: ['Honey', 'Milk', 'Chocolate', 'Juice'],
+            correctAnswer: 'Honey',
+            explanation: 'Honeybees make honey from sweet flower nectar.'
+          },
+          {
+            id: `aq-${Date.now()}-3`,
+            type: 'mcq',
+            question: 'Which planet is known as the Red Planet in our solar system? 🪐',
+            options: ['Mars', 'Earth', 'Venus', 'Jupiter'],
+            correctAnswer: 'Mars',
+            explanation: 'Mars looks red because of rusty iron dust on its surface!'
+          },
+          {
+            id: `aq-${Date.now()}-4`,
+            type: 'mcq',
+            question: 'How many legs does an octopus have? 🐙',
+            options: ['8 legs', '6 legs', '4 legs', '10 legs'],
+            correctAnswer: '8 legs',
+            explanation: 'An octopus has 8 long arms called tentacles!'
+          }
+        ];
         setQuestions(generated);
         showToast(`${generated.length} questions generated for "${autoTopic}"!`);
       }
 
       setIsGenerating(false);
-    }, 500);
+    }, 400);
   };
 
   const compileGameData = () => {
@@ -318,21 +261,33 @@ export const CompetitionCreate: React.FC = () => {
         return { gridSize: 10, words: wordSearchWords, grid };
       }
       case 'crossword': {
-        const across = crosswordItems.filter(c => c.type === 'across').map(c => ({
+        const across = crosswordItems.filter(c => c.type === 'across').map((c, idx) => ({
           num: c.num,
           word: c.word.toUpperCase(),
           clue: c.clue,
-          row: (c.num - 1) % 5,
-          col: 0
+          hint: c.hint,
+          row: typeof c.row === 'number' ? c.row : idx * 2,
+          col: typeof c.col === 'number' ? c.col : 0
         }));
-        const down = crosswordItems.filter(c => c.type === 'down').map(c => ({
+        const down = crosswordItems.filter(c => c.type === 'down').map((c, idx) => ({
           num: c.num,
           word: c.word.toUpperCase(),
           clue: c.clue,
-          row: 0,
-          col: (c.num - 1) % 5
+          hint: c.hint,
+          row: typeof c.row === 'number' ? c.row : 0,
+          col: typeof c.col === 'number' ? c.col : idx * 2
         }));
-        return { rows: 6, cols: 6, across, down };
+        const maxR = Math.max(
+          ...across.map(a => a.row),
+          ...down.map(d => d.row + d.word.length - 1),
+          3
+        ) + 1;
+        const maxC = Math.max(
+          ...across.map(a => a.col + a.word.length - 1),
+          ...down.map(d => d.col),
+          3
+        ) + 1;
+        return { rows: maxR, cols: maxC, across, down };
       }
       case 'matching_pairs':
         return { pairs: matchingPairsList };
@@ -348,18 +303,8 @@ export const CompetitionCreate: React.FC = () => {
         };
       case 'alphabet':
         return { letters: alphabetList };
-      case 'memory': {
-        const cards: any[] = [];
-        memoryPairsList.forEach((p, idx) => {
-          cards.push({ id: `c-${idx}-a`, pairId: `pair-${idx}`, text: p.term, isTerm: true });
-          cards.push({ id: `c-${idx}-b`, pairId: `pair-${idx}`, text: p.definition, isTerm: false });
-        });
-        return { cards };
-      }
       case 'true_false':
         return { statements: trueFalseList };
-      case 'map_quiz':
-        return { title, locations: mapLocationsList };
       case 'rapid_fire':
       case 'quiz':
       default:
@@ -456,11 +401,13 @@ export const CompetitionCreate: React.FC = () => {
         type: newCwType,
         num: newCwNum,
         word: clean,
-        clue: newCwClue.trim()
+        clue: newCwClue.trim(),
+        hint: newCwHint.trim() || `Starts with ${clean[0]} (${clean.length} letters)`
       }
     ]);
     setNewCwWord('');
     setNewCwClue('');
+    setNewCwHint('');
     setNewCwNum(prev => prev + 1);
     showToast(`Added ${newCwType.toUpperCase()} clue for "${clean}".`);
   };
@@ -651,22 +598,18 @@ export const CompetitionCreate: React.FC = () => {
       case 'matching_pairs': return matchingPairsList.length;
       case 'fill_in_blanks': return fillInBlanksList.length;
       case 'alphabet': return alphabetList.length;
-      case 'memory': return memoryPairsList.length;
       case 'true_false': return trueFalseList.length;
-      case 'map_quiz': return mapLocationsList.length;
       default: return questions.length;
     }
   };
 
   const handleSelectGame = (game: CompetitionGameMeta) => {
     setSelectedGameType(game.id);
-    const content = generateGameContent(game.id, autoTopic, autoSubject);
+    const content = generateGameContent(game.id, autoTopic);
     setGameData(content);
     if (content?.words) setWordSearchWords(content.words);
     if (content?.pairs) setMatchingPairsList(content.pairs);
     if (content?.statements) setTrueFalseList(content.statements);
-    if (content?.letters) setAlphabetList(content.letters);
-    if (content?.locations) setMapLocationsList(content.locations);
     if (content?.questions) {
       if (game.id === 'fill_in_blanks') {
         setFillInBlanksList(content.questions.map((q: any) => ({
@@ -680,27 +623,9 @@ export const CompetitionCreate: React.FC = () => {
         setQuestions(content.questions);
       }
     }
-    if (content?.across && content?.down) {
-      const items: any[] = [
-        ...content.across.map((a: any) => ({ id: `cw-a-${a.num}`, type: 'across' as const, num: a.num, word: a.word, clue: a.clue })),
-        ...content.down.map((d: any) => ({ id: `cw-d-${d.num}`, type: 'down' as const, num: d.num, word: d.word, clue: d.clue }))
-      ];
-      setCrosswordItems(items);
-    }
-    if (content?.cards) {
-      const pairs: any[] = [];
-      for (let i = 0; i < content.cards.length; i += 2) {
-        pairs.push({
-          id: `m-${i}`,
-          term: content.cards[i]?.text || '',
-          definition: content.cards[i+1]?.text || ''
-        });
-      }
-      setMemoryPairsList(pairs);
-    }
 
-    setTitle(`${autoSubject}: ${game.name} Showdown`);
-    showToast(`Active Style: ${game.name}`);
+    setTitle(`${game.name} Showdown`);
+    showToast(`Active Game: ${game.name}`);
   };
 
   const handleSaveDraft = () => {
@@ -847,6 +772,11 @@ export const CompetitionCreate: React.FC = () => {
                     <span style={{ fontSize: '13px', color: 'var(--color-text-main)' }}>
                       — {item.clue}
                     </span>
+                    {item.hint && (
+                      <span style={{ fontSize: '11px', color: '#0F766E', backgroundColor: '#CCFBF1', padding: '2px 8px', borderRadius: '4px', fontWeight: 600 }}>
+                        💡 {item.hint}
+                      </span>
+                    )}
                   </div>
                   <button
                     type="button"
@@ -984,45 +914,6 @@ export const CompetitionCreate: React.FC = () => {
           </div>
         );
 
-      case 'memory':
-        return (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '10px' }}>
-            {memoryPairsList.map(pair => (
-              <div
-                key={pair.id}
-                style={{
-                  padding: '12px',
-                  backgroundColor: '#FAFAF9',
-                  borderRadius: 'var(--radius-md)',
-                  border: '1px solid var(--color-border-light)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '6px'
-                }}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 800, color: '#0F766E', textTransform: 'uppercase' }}>
-                    Memory Pair
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveMemoryPair(pair.id)}
-                    style={{ background: 'transparent', border: 'none', color: 'var(--color-error)', cursor: 'pointer', padding: '2px' }}
-                  >
-                    <Trash2 size={14} />
-                  </button>
-                </div>
-                <div style={{ fontSize: '13.5px', fontWeight: 800, color: 'var(--color-text-main)' }}>
-                  Card A: {pair.term}
-                </div>
-                <div style={{ fontSize: '12.5px', color: 'var(--color-text-muted)' }}>
-                  Card B: {pair.definition}
-                </div>
-              </div>
-            ))}
-          </div>
-        );
-
       case 'true_false':
         return (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -1058,45 +949,6 @@ export const CompetitionCreate: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => handleRemoveTrueFalse(tf.id)}
-                  style={{ background: 'transparent', border: 'none', color: 'var(--color-error)', cursor: 'pointer', padding: '4px' }}
-                >
-                  <Trash2 size={15} />
-                </button>
-              </div>
-            ))}
-          </div>
-        );
-
-      case 'map_quiz':
-        return (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {mapLocationsList.map(loc => (
-              <div
-                key={loc.id}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '12px 14px',
-                  backgroundColor: '#FAFAF9',
-                  borderRadius: 'var(--radius-md)',
-                  border: '1px solid var(--color-border-light)'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <Badge variant="emerald">{loc.region}</Badge>
-                  <span style={{ fontWeight: 800, fontSize: '13.5px', color: 'var(--color-text-main)' }}>
-                    {loc.name}
-                  </span>
-                  {loc.hint && (
-                    <span style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>
-                      ({loc.hint})
-                    </span>
-                  )}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleRemoveMapLocation(loc.id)}
                   style={{ background: 'transparent', border: 'none', color: 'var(--color-error)', cursor: 'pointer', padding: '4px' }}
                 >
                   <Trash2 size={15} />
@@ -1201,7 +1053,7 @@ export const CompetitionCreate: React.FC = () => {
             <div style={{ display: 'flex', gap: '10px' }}>
               <div style={{ flex: 1 }}>
                 <Input
-                  placeholder="Type word (e.g. PACKET, PROTOCOL, PYTHON)..."
+                  placeholder="Type simple word (e.g. CAT, DOG, STAR, SUN)..."
                   value={newWordInput}
                   onChange={e => setNewWordInput(e.target.value)}
                   onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleAddWord(); } }}
@@ -1218,9 +1070,9 @@ export const CompetitionCreate: React.FC = () => {
         return (
           <div style={{ backgroundColor: '#FFFFFF', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-main)' }}>
-              Add Crossword Clue:
+              Add Crossword Clue (With Student Hint):
             </span>
-            <div style={{ display: 'grid', gridTemplateColumns: '120px 80px 1fr 2fr auto', gap: '10px', alignItems: 'flex-end' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '120px 80px 1.2fr 2fr', gap: '10px', alignItems: 'flex-end' }}>
               <Select
                 label="Direction"
                 value={newCwType}
@@ -1238,16 +1090,26 @@ export const CompetitionCreate: React.FC = () => {
               />
               <Input
                 label="Answer Word"
-                placeholder="e.g. TCP"
+                placeholder="e.g. CAT"
                 value={newCwWord}
                 onChange={e => setNewCwWord(e.target.value)}
               />
               <Input
-                label="Clue Sentence"
-                placeholder="e.g. Transport layer protocol with 3-way handshake"
+                label="Clue Description"
+                placeholder="e.g. Cute pet that purrs and says Meow 🐱"
                 value={newCwClue}
                 onChange={e => setNewCwClue(e.target.value)}
               />
+            </div>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end' }}>
+              <div style={{ flex: 1 }}>
+                <Input
+                  label="Student Hint (Optional)"
+                  placeholder="e.g. Starts with C, rhymes with HAT (3 letters)"
+                  value={newCwHint}
+                  onChange={e => setNewCwHint(e.target.value)}
+                />
+              </div>
               <Button type="button" variant="primary" size="md" icon={<Plus size={15} />} onClick={handleAddCrosswordItem}>
                 Add Clue
               </Button>
@@ -1259,18 +1121,18 @@ export const CompetitionCreate: React.FC = () => {
         return (
           <div style={{ backgroundColor: '#FFFFFF', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-main)' }}>
-              Add Concept Match Pair:
+              Add Friendly Match Pair:
             </span>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr auto', gap: '10px', alignItems: 'flex-end' }}>
               <Input
-                label="Left Item / Term"
-                placeholder="e.g. HTTPS"
+                label="Left Item"
+                placeholder="e.g. 🐶 Dog"
                 value={newPairLeft}
                 onChange={e => setNewPairLeft(e.target.value)}
               />
               <Input
-                label="Matching Definition / Clue"
-                placeholder="e.g. Port 443 • TLS Encrypted Web"
+                label="Matching Friend / Pair"
+                placeholder="e.g. 🦴 Bone"
                 value={newPairRight}
                 onChange={e => setNewPairRight(e.target.value)}
               />
@@ -1285,24 +1147,24 @@ export const CompetitionCreate: React.FC = () => {
         return (
           <div style={{ backgroundColor: '#FFFFFF', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-main)' }}>
-              Add Fill-in-the-Blank Challenge:
+              Add Fill-in-the-Blank Sentence:
             </span>
             <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1.5fr', gap: '10px' }}>
               <Input
                 label="Text Before Blank"
-                placeholder="e.g. In computer networking, the"
+                placeholder="e.g. The grass in the park is"
                 value={newFibBefore}
                 onChange={e => setNewFibBefore(e.target.value)}
               />
               <Input
                 label="Missing Word (Correct)"
-                placeholder="e.g. Transport"
+                placeholder="e.g. Green"
                 value={newFibWord}
                 onChange={e => setNewFibWord(e.target.value)}
               />
               <Input
                 label="Text After Blank"
-                placeholder="e.g. layer guarantees end-to-end delivery."
+                placeholder="e.g. and fresh."
                 value={newFibAfter}
                 onChange={e => setNewFibAfter(e.target.value)}
               />
@@ -1311,7 +1173,7 @@ export const CompetitionCreate: React.FC = () => {
               <div style={{ flex: 1 }}>
                 <Input
                   label="Options (comma separated)"
-                  placeholder="e.g. Transport, Physical, Application, Session"
+                  placeholder="e.g. Green, Pink, Purple, Orange"
                   value={newFibOpts}
                   onChange={e => setNewFibOpts(e.target.value)}
                 />
@@ -1360,31 +1222,6 @@ export const CompetitionCreate: React.FC = () => {
           </div>
         );
 
-      case 'memory':
-        return (
-          <div style={{ backgroundColor: '#FFFFFF', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-main)' }}>
-              Add Memory Match Card Pair:
-            </span>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr auto', gap: '10px', alignItems: 'flex-end' }}>
-              <Input
-                label="Card A (Term / Symbol)"
-                placeholder="e.g. O(1)"
-                value={newMemTerm}
-                onChange={e => setNewMemTerm(e.target.value)}
-              />
-              <Input
-                label="Card B (Matching Concept)"
-                placeholder="e.g. Hash Table Lookup"
-                value={newMemDef}
-                onChange={e => setNewMemDef(e.target.value)}
-              />
-              <Button type="button" variant="primary" size="md" icon={<Plus size={15} />} onClick={handleAddMemoryPair}>
-                Add Pair
-              </Button>
-            </div>
-          </div>
-        );
 
       case 'true_false':
         return (
@@ -1394,7 +1231,7 @@ export const CompetitionCreate: React.FC = () => {
             </span>
             <Input
               label="Statement Text *"
-              placeholder="e.g. HTTP/3 operates over UDP using the QUIC protocol."
+              placeholder="e.g. The Sun is super hot and gives us daylight. ☀️"
               value={newTfStatement}
               onChange={e => setNewTfStatement(e.target.value)}
             />
@@ -1442,7 +1279,7 @@ export const CompetitionCreate: React.FC = () => {
               </div>
               <Input
                 label="Concept Explanation (Displayed post-round)"
-                placeholder="e.g. QUIC solves head-of-line blocking."
+                placeholder="e.g. The Sun is our bright star giving light and life!"
                 value={newTfExp}
                 onChange={e => setNewTfExp(e.target.value)}
               />
@@ -1453,37 +1290,6 @@ export const CompetitionCreate: React.FC = () => {
           </div>
         );
 
-      case 'map_quiz':
-        return (
-          <div style={{ backgroundColor: '#FFFFFF', border: '1px solid var(--color-border)', borderRadius: 'var(--radius-md)', padding: '16px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--color-text-main)' }}>
-              Add Map Target Location:
-            </span>
-            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1.5fr auto', gap: '10px', alignItems: 'flex-end' }}>
-              <Input
-                label="Location / Region Name"
-                placeholder="e.g. Silicon Valley Hub"
-                value={newMapName}
-                onChange={e => setNewMapName(e.target.value)}
-              />
-              <Input
-                label="Category / Continent"
-                placeholder="e.g. North America"
-                value={newMapRegion}
-                onChange={e => setNewMapRegion(e.target.value)}
-              />
-              <Input
-                label="Hint / Clue"
-                placeholder="e.g. SF Bay Area innovation center"
-                value={newMapHint}
-                onChange={e => setNewMapHint(e.target.value)}
-              />
-              <Button type="button" variant="primary" size="md" icon={<Plus size={15} />} onClick={handleAddMapLocation}>
-                Add Location
-              </Button>
-            </div>
-          </div>
-        );
 
       case 'rapid_fire':
       case 'quiz':
@@ -1537,7 +1343,7 @@ export const CompetitionCreate: React.FC = () => {
 
                   <Input
                     label="Question Text *"
-                    placeholder="e.g. Which algorithm prevents bufferbloat by maintaining 1x BDP in-flight?"
+                    placeholder="e.g. Which animal is known as the King of the Jungle? 🦁"
                     value={q.question}
                     onChange={e => handleUpdateQuestion(q.id, { question: e.target.value })}
                     required
@@ -1685,7 +1491,7 @@ export const CompetitionCreate: React.FC = () => {
             </span>
           </div>
           <p style={{ fontSize: '12.5px', color: 'var(--color-text-muted)', marginBottom: '14px' }}>
-            Choose from 10 interactive competition game types for your tournament arena.
+            Choose from fun, kid-friendly game types for your tournament arena.
           </p>
 
           <div
@@ -1885,25 +1691,12 @@ export const CompetitionCreate: React.FC = () => {
                   </span>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.8fr 1fr', gap: '12px', marginBottom: '14px' }}>
-                  <Select
-                    label="Academic Discipline"
-                    value={autoSubject}
-                    onChange={e => setAutoSubject(e.target.value)}
-                    options={[
-                      { value: 'Computer Science', label: 'Computer Science' },
-                      { value: 'Biology', label: 'Biology' },
-                      { value: 'Chemistry', label: 'Chemistry' },
-                      { value: 'Physics', label: 'Physics' },
-                      { value: 'General Knowledge', label: 'General Knowledge & Logic' }
-                    ]}
-                  />
-
+                <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '12px', marginBottom: '14px' }}>
                   <Input
-                    label="Target Topic or Concept"
+                    label="Game Topic (e.g. Cute Animals, Solar System, Colors)"
                     value={autoTopic}
                     onChange={e => setAutoTopic(e.target.value)}
-                    placeholder="e.g. TCP Congestion Control, Photosynthesis, Thermodynamics..."
+                    placeholder="e.g. Cute Animals, Solar System, Colors & Fruits..."
                   />
 
                   <Select
@@ -1911,9 +1704,9 @@ export const CompetitionCreate: React.FC = () => {
                     value={autoDifficulty}
                     onChange={e => setAutoDifficulty(e.target.value)}
                     options={[
-                      { value: 'Standard', label: 'Standard' },
-                      { value: 'Advanced', label: 'Advanced' },
-                      { value: 'Championship', label: 'Championship' }
+                      { value: 'Easy', label: 'Easy (Beginner Friendly)' },
+                      { value: 'Medium', label: 'Medium' },
+                      { value: 'Super Fun', label: 'Super Fun' }
                     ]}
                   />
                 </div>
@@ -1954,7 +1747,7 @@ export const CompetitionCreate: React.FC = () => {
           {/* 2. MANUAL ENTRY MODE */}
           {questionSource === 'manual' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {/* Topic and Subject Header for Manual Mode */}
+              {/* Topic Header for Manual Mode */}
               <div style={{ backgroundColor: '#F8FAFC', padding: '14px 16px', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border-light)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px', flexWrap: 'wrap', gap: '8px' }}>
                   <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--color-primary-emerald)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -1964,24 +1757,12 @@ export const CompetitionCreate: React.FC = () => {
                     {getItemCount()} {getItemCount() === 1 ? 'Item' : 'Items'} Configured
                   </span>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '12px' }}>
-                  <Select
-                    label="Academic Discipline"
-                    value={autoSubject}
-                    onChange={e => setAutoSubject(e.target.value)}
-                    options={[
-                      { value: 'Computer Science', label: 'Computer Science' },
-                      { value: 'Biology', label: 'Biology' },
-                      { value: 'Chemistry', label: 'Chemistry' },
-                      { value: 'Physics', label: 'Physics' },
-                      { value: 'General Knowledge', label: 'General Knowledge & Logic' }
-                    ]}
-                  />
+                <div>
                   <Input
-                    label="Tournament Topic / Concept"
+                    label="Game Topic / Theme"
                     value={autoTopic}
                     onChange={e => setAutoTopic(e.target.value)}
-                    placeholder="e.g. Molecular Biology, Operating Systems..."
+                    placeholder="e.g. Animals, Daily Life, Fun Shapes, Science..."
                   />
                 </div>
               </div>
@@ -2101,28 +1882,8 @@ export const CompetitionCreate: React.FC = () => {
                 onExit={() => setIsPreviewOpen(false)}
               />
             )}
-            {selectedGameType === 'memory' && (
-              <MemoryMatchGame
-                data={compileGameData() as any}
-                onComplete={(sc, acc) => {
-                  showToast(`Preview Finished! Score: ${sc} pts (${acc}% accuracy)`);
-                  setIsPreviewOpen(false);
-                }}
-                onExit={() => setIsPreviewOpen(false)}
-              />
-            )}
             {selectedGameType === 'true_false' && (
               <TrueFalseGame
-                data={compileGameData() as any}
-                onComplete={(sc, acc) => {
-                  showToast(`Preview Finished! Score: ${sc} pts (${acc}% accuracy)`);
-                  setIsPreviewOpen(false);
-                }}
-                onExit={() => setIsPreviewOpen(false)}
-              />
-            )}
-            {selectedGameType === 'map_quiz' && (
-              <MapQuizGame
                 data={compileGameData() as any}
                 onComplete={(sc, acc) => {
                   showToast(`Preview Finished! Score: ${sc} pts (${acc}% accuracy)`);

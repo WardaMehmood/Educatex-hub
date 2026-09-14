@@ -196,9 +196,7 @@ export type CompetitionGameType =
   | 'matching_pairs'
   | 'fill_in_blanks'
   | 'alphabet'
-  | 'memory'
   | 'true_false'
-  | 'map_quiz'
   | 'rapid_fire';
 
 export interface CompetitionSession {

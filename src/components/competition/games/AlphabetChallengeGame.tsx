@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { CheckCircle2, ArrowRight, HelpCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { CheckCircle2, ArrowRight, HelpCircle, Clock } from 'lucide-react';
 import { Button } from '../../common/Button';
+import { playCorrectChime, playWrongSound, playTickSound, playCompleteFanfare } from '../../../utils/soundEffects';
 
 interface AlphabetChallengeGameProps {
   data?: {
@@ -54,8 +55,37 @@ export const AlphabetChallengeGame: React.FC<AlphabetChallengeGameProps> = ({
   const [showHint, setShowHint] = useState(false);
   const [letterStatus, setLetterStatus] = useState<Record<string, 'correct' | 'wrong'>>({});
   const [score, setScore] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(120); // 2-minute timer
 
   const currentItem = letters[currentIdx];
+
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  useEffect(() => {
+    if (timeLeft <= 0) {
+      const correctCount = Object.values(letterStatus).filter(s => s === 'correct').length;
+      const accuracy = Math.round((correctCount / letters.length) * 100);
+      onComplete(score, accuracy);
+      return;
+    }
+    const timer = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timer);
+          return 0;
+        }
+        if (prev <= 6 && prev > 1) {
+          playTickSound();
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [timeLeft, letterStatus, letters.length, score]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -70,6 +100,9 @@ export const AlphabetChallengeGame: React.FC<AlphabetChallengeGameProps> = ({
 
     if (isCorrect) {
       setScore(prev => prev + 300);
+      playCorrectChime();
+    } else {
+      playWrongSound();
     }
 
     if (currentIdx < letters.length - 1) {
@@ -77,6 +110,7 @@ export const AlphabetChallengeGame: React.FC<AlphabetChallengeGameProps> = ({
       setUserInput('');
       setShowHint(false);
     } else {
+      playCompleteFanfare();
       const correctCount = Object.values(updatedStatus).filter(s => s === 'correct').length;
       const accuracy = Math.round((correctCount / letters.length) * 100);
       onComplete(score + (isCorrect ? 300 : 0), accuracy);
@@ -106,10 +140,33 @@ export const AlphabetChallengeGame: React.FC<AlphabetChallengeGameProps> = ({
           </h2>
         </div>
 
-        <div style={{ textAlign: 'right' }}>
-          <span style={{ fontSize: '11px', color: '#94A3B8' }}>Tournament Score</span>
-          <div style={{ fontSize: '18px', fontWeight: 900, color: 'var(--color-lime-accent)' }}>
-            {score} pts
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          {/* 2-Minute Round Timer */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              backgroundColor: timeLeft <= 15 ? 'rgba(239,68,68,0.2)' : timeLeft <= 30 ? 'rgba(245,158,11,0.2)' : 'rgba(255,255,255,0.06)',
+              border: `1.5px solid ${timeLeft <= 15 ? '#EF4444' : timeLeft <= 30 ? '#F59E0B' : 'rgba(255,255,255,0.15)'}`,
+              padding: '6px 14px',
+              borderRadius: '10px'
+            }}
+          >
+            <Clock size={16} color={timeLeft <= 15 ? '#EF4444' : timeLeft <= 30 ? '#F59E0B' : 'var(--color-lime-accent)'} />
+            <div>
+              <span style={{ fontSize: '10px', color: '#94A3B8', display: 'block', fontWeight: 800 }}>2-MIN TIMER</span>
+              <span style={{ fontSize: '18px', fontWeight: 900, color: timeLeft <= 15 ? '#EF4444' : timeLeft <= 30 ? '#F59E0B' : '#FFFFFF', fontFamily: 'monospace' }}>
+                {formatTime(timeLeft)}
+              </span>
+            </div>
+          </div>
+
+          <div style={{ textAlign: 'right' }}>
+            <span style={{ fontSize: '11px', color: '#94A3B8' }}>Tournament Score</span>
+            <div style={{ fontSize: '18px', fontWeight: 900, color: 'var(--color-lime-accent)' }}>
+              {score} pts
+            </div>
           </div>
         </div>
       </div>
